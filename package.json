@@ -18,6 +18,7 @@
 		"node": "^16.0.0 || >= 18.0.0"
 	},
 	"dependencies": {
+		"ember-apply": "^2.5.2",
 		"execa": "^6.1.0",
 		"yargs": "^17.6.2"
 	},
