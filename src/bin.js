@@ -1,35 +1,32 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs/promises';
-import os from 'node:os';
-import path from 'node:path';
-import url from 'node:url';
-
-import { project } from 'ember-apply';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { getLatestTag, mergesToBranch } from './git.js';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import { inspect } from './util.js';
+import { getGroupedChanges } from './workspaces.js';
 
 yargs(hideBin(process.argv))
   .command(
     ['$0'],
     'Generate changesets based on merges to the default branch',
-    () => {},
-    async () => {
-      let tag = await getLatestTag();
-      let merges = await mergesToBranch(tag);
-      let workspaces = await project.getWorkspaces();
+    (yargs) => {
+      yargs.option('base', {
+        alias: 'b',
+        type: 'string',
+        description: `The base reference to calculate changes from. By default this is the most recent tag. This can be used to backfill changes, or test out the tool before comitting to a release.`
+      })
+    },
+    async (args) => {
+      let changes = await getGroupedChanges(args.base);
 
-      console.log({ merges, workspaces });
+      inspect(changes);
       // TODO:
       // await workspaceChangesPerCommit
       //
-      // 2. Iterate over each commit and prompt if there is an existing changeset 
+      // 2. Iterate over each commit and prompt if there is an existing changeset
       //    for the set of changes
     }
   )
   .help()
   .demandCommand().argv;
-

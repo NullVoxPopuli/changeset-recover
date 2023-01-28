@@ -1,8 +1,8 @@
-import { execaCommand } from "execa";
+import { execaCommand } from 'execa';
 
 /**
-  * @param {string} commitSha
-  */
+ * @param {string} commitSha
+ */
 export async function isRenovate(commitSha) {
   let author = await authorOf(commitSha);
 
@@ -10,8 +10,8 @@ export async function isRenovate(commitSha) {
 }
 
 /**
-  * @param {string} commitSha
-  */
+ * @param {string} commitSha
+ */
 export async function isDependabot(commitSha) {
   let author = await authorOf(commitSha);
 
@@ -19,12 +19,12 @@ export async function isDependabot(commitSha) {
 }
 
 /**
-  * @param {string} commitSha
-  */
+ * @param {string} commitSha
+ */
 export async function authorOf(commitSha) {
-  let { 
-    stdout: author 
-  } = await execaCommand(`git show -s --format='%an' ${commitSha}`); 
+  let { stdout: author } = await execaCommand(
+    `git show -s --format='%an' ${commitSha}`
+  );
 
   return author;
 }

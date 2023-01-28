@@ -8,7 +8,7 @@
     "moduleResolution": "nodenext",
     // We only use tsc for type checking
     "declaration": true,
-    "noEmit": true,
+    "noEmit": true
   },
   "include": ["./**/*"]
 }
