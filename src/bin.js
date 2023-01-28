@@ -28,8 +28,6 @@ yargs(hideBin(process.argv))
       //
       // 2. Iterate over each commit and prompt if there is an existing changeset 
       //    for the set of changes
-
-      console.log({ merges });
     }
   )
   .help()
