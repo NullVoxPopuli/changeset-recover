@@ -45,7 +45,7 @@ async function getProjects() {
 /**
  * Returns the list of changes for each commit since the latest tag
  *
- * @param {string} fromBaseReference defaults to latest tag
+ * @param {string} [ fromBaseReference ] defaults to latest tag
  */
 export async function getGroupedChanges(fromBaseReference) {
   let tag = fromBaseReference || (await getLatestTag());

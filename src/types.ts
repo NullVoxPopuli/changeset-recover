@@ -1,3 +1,9 @@
+export interface GroupedChange {
+  files: string[];
+  commit: string;
+  workspaces: string[];
+}
+
 export interface Project {
   /**
    * package.json#name
