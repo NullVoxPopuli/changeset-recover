@@ -1,6 +1,5 @@
+import { packageJson, project } from 'ember-apply';
 import path from 'node:path';
-
-import { project, packageJson } from 'ember-apply';
 
 import { filesChangedIn, getLatestTag, mergesToBranch } from './git/commits.js';
 
@@ -45,11 +44,11 @@ async function getProjects() {
 
 /**
  * Returns the list of changes for each commit since the latest tag
-  *
-  * @param {string} fromBaseReference defaults to latest tag
+ *
+ * @param {string} fromBaseReference defaults to latest tag
  */
 export async function getGroupedChanges(fromBaseReference) {
-  let tag = fromBaseReference || await getLatestTag();
+  let tag = fromBaseReference || (await getLatestTag());
   let commits = await mergesToBranch(tag);
   let projects = await getProjects();
 

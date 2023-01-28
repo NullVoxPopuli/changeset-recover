@@ -14,8 +14,8 @@ yargs(hideBin(process.argv))
       yargs.option('base', {
         alias: 'b',
         type: 'string',
-        description: `The base reference to calculate changes from. By default this is the most recent tag. This can be used to backfill changes, or test out the tool before comitting to a release.`
-      })
+        description: `The base reference to calculate changes from. By default this is the most recent tag. This can be used to backfill changes, or test out the tool before comitting to a release.`,
+      });
     },
     async (args) => {
       let changes = await getGroupedChanges(args.base);
