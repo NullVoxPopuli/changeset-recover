@@ -1,6 +1,8 @@
 export interface GroupedChange {
   files: string[];
   commit: string;
+  author: string;
+  message: string;
   workspaces: string[];
 }
 

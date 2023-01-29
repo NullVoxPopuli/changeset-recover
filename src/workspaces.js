@@ -1,7 +1,13 @@
 import { packageJson, project } from 'ember-apply';
 import path from 'node:path';
 
-import { filesChangedIn, getLatestTag, mergesToBranch } from './git/commits.js';
+import { authorOf } from './git/author.js';
+import {
+  filesChangedIn,
+  getLatestTag,
+  mergesToBranch,
+  messageOf,
+} from './git/commits.js';
 
 /** @type {Array<import('./types.js').Project>} */
 let PROJECTS;
@@ -64,7 +70,12 @@ export async function getGroupedChanges(fromBaseReference) {
         })
         .map((project) => project.gitRootRelativePath);
 
-      return { files, commit, workspaces };
+      let [author, message] = await Promise.all([
+        authorOf(commit),
+        messageOf(commit),
+      ]);
+
+      return { files, commit, workspaces, author, message };
     })
   );
 

@@ -6,7 +6,7 @@ import { execaCommand } from 'execa';
 export async function isRenovate(commitSha) {
   let author = await authorOf(commitSha);
 
-  return author.startsWith('renovate[bot]');
+  return authorIs.renovate(author);
 }
 
 /**
@@ -15,7 +15,7 @@ export async function isRenovate(commitSha) {
 export async function isDependabot(commitSha) {
   let author = await authorOf(commitSha);
 
-  return author.startsWith('dependabot[bot]');
+  return authorIs.dependabot(author);
 }
 
 /**
@@ -28,3 +28,14 @@ export async function authorOf(commitSha) {
 
   return author.replaceAll(/'/g, '');
 }
+
+export const authorIs = {
+  /**
+   * @param {string} authorName
+   */
+  renovate: (authorName) => authorName.startsWith('renovate[bot]'),
+  /**
+   * @param {string} authorName
+   */
+  dependabot: (authorName) => authorName.startsWith('dependabot[bot]'),
+};
