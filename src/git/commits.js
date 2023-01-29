@@ -59,3 +59,13 @@ export async function filesChangedIn(mergeSha) {
 
   return stdout.split('\n');
 }
+
+/**
+ * @param {string} sha
+ * @returns {Promise<string>} 
+ */
+export async function messageOf(sha) {
+  let { stdout } = await execaCommand(`git log --format=%B -n 1 ${sha}`);
+
+  return stdout;
+}

@@ -26,5 +26,5 @@ export async function authorOf(commitSha) {
     `git show -s --format='%an' ${commitSha}`
   );
 
-  return author;
+  return author.replaceAll(/'/g, '');
 }
