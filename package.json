@@ -28,6 +28,7 @@
     "yargs": "^17.6.2"
   },
   "scripts": {
+    "release": "changeset publish",
     "dev:sync": "NODE_OPTIONS='--no-warnings' ts-node --esm ./dev.mts sync-package-json",
     "lint": "eslint . --fix",
     "format": "prettier -w .",
