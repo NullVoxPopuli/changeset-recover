@@ -26,7 +26,7 @@ export async function authorOf(commitSha) {
     `git show -s --format='%an' ${commitSha}`
   );
 
-  return author.replaceAll(/'/g, '');
+  return author.replace(/'/g, '');
 }
 
 export const authorIs = {

@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { TreePrompt } from 'inquirer-tree-prompt';
+import wrapAnsi from 'wrap-ansi';
 
 import { authorIs } from './git/author.js';
 
@@ -21,7 +22,7 @@ export async function selectMerges(changes) {
     ],
   });
 
-  if (filtered.alreadyHasChangeset) {
+  if (filtered.alreadyHasChangeset.length) {
     treeOptions.push({
       value: `Merges that already have changeset entries`,
       open: false,
@@ -59,7 +60,7 @@ export async function selectMerges(changes) {
     {
       name: 'commitsToMakeChangesetsFor',
       message: 'Which merges would you like to create changesets for?',
-      pageSize: 20,
+      pageSize: 30,
       type: 'tree',
       multiple: true,
       short: true,
@@ -147,9 +148,39 @@ export function formatMessage(groupedChange, indentSize = 19) {
 
   let message = `${chalk.bold.yellow(commit)} | ${workspaces}`;
 
-  message += `${startNewLine}${chalk.dim(summary.split('\n')[0])}`;
+  message = wrapAnsi(message, 80, {
+    // we don't want to break workspaces mid-word
+    hard: false,
+  });
+
+  // indent all but the first line so that we align with the pipe
+  message = message
+    .split('\n')
+    .map((line, index) => {
+      if (index === 0) return line;
+
+      return indent + line;
+    })
+    .join('\n');
+
+  let commitMessage = wrapAnsi(chalk.dim(summary.split('\n')[0]), 80, {
+    hard: true,
+  })
+    .split('\n')
+    .map((line) => startNewLine + line)
+    .filter(line => !isEmpty(line))
+    .join('');
+
+  message += commitMessage;
 
   return message;
+}
+
+/**
+  * @param {string} line
+  */
+function isEmpty(line) {
+  return /^\s+$/.test(line);
 }
 
 /**

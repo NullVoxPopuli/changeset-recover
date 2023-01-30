@@ -62,6 +62,9 @@ async function getProjects() {
  */
 export async function getGroupedChanges(fromBaseReference) {
   let tag = fromBaseReference || (await getLatestTag());
+
+  console.debug('Calculating changes for ref: ' + tag);
+
   let commits = await mergesToBranch(tag);
   let projects = await getProjects();
 
