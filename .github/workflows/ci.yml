@@ -12,12 +12,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: "Lint"
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/pnpm
+      - run: pnpm lint
+      - run: pnpm format:check
+
+
   # https://github.com/changesets/action
   release:
     name: Release
     timeout-minutes: 5
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    needs:
+      - lint
 
     steps:
       - uses: actions/checkout@v3

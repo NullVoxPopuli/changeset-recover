@@ -32,6 +32,8 @@
     "dev:sync": "NODE_OPTIONS='--no-warnings' ts-node --esm ./dev.mts sync-package-json",
     "lint": "eslint . --fix",
     "format": "prettier -w .",
+    "lint:check": "eslint .",
+    "format:check": "prettier -c .",
     "start": "node src/bin.js"
   },
   "devDependencies": {
