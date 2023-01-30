@@ -4,5 +4,7 @@
   "initialVersions": {
     "changeset-recover": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "rich-tables-agree"
+  ]
 }
