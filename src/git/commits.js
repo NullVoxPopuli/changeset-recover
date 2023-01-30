@@ -1,4 +1,4 @@
-import { execa, execaCommand } from 'execa';
+import { execaCommand } from 'execa';
 
 /**
  * @param {string} mergeSha

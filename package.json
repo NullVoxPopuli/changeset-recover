@@ -18,9 +18,11 @@
     "node": "^16.0.0 || >= 18.0.0"
   },
   "dependencies": {
+    "chalk": "^5.2.0",
     "ember-apply": "^2.6.0",
     "execa": "^6.1.0",
     "inquirer": "^9.1.4",
+    "inquirer-tree-prompt": "github:NullVoxPopuli/inquirer-tree-prompt#esm-ify",
     "yargs": "^17.6.2"
   },
   "scripts": {

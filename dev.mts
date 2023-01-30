@@ -1,4 +1,6 @@
 #!/usr/bin/env ts-node
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-console */
 /* eslint-disable n/shebang */
 

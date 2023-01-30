@@ -4,6 +4,7 @@ export interface GroupedChange {
   author: string;
   message: string;
   workspaces: string[];
+  workspaceNames: string[];
 }
 
 export interface Project {
