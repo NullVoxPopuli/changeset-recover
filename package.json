@@ -28,7 +28,6 @@
     "yargs": "^17.6.2"
   },
   "scripts": {
-    "prepare": "pnpm dev:sync",
     "dev:sync": "NODE_OPTIONS='--no-warnings' ts-node --esm ./dev.mts sync-package-json",
     "lint": "eslint . --fix",
     "format": "prettier -w .",
