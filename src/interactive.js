@@ -1,13 +1,19 @@
+/* eslint-disable n/no-process-exit */
 import inquirer from 'inquirer';
 
+import { writeChangeset } from './changesets.js';
 import { formatMessage, selectMerges } from './select-merges.js';
-import { inspect } from './util.js';
 
 /**
  * @param {import('./types.js').GroupedChange[]} changes
  */
 export async function startInteractive(changes) {
   let selected = await selectMerges(changes);
+
+  if (selected.length === 0) {
+    console.info('No changes were selected');
+    process.exit(0);
+  }
 
   let formatted = selected
     .map((change) => formatMessage(change, 14))
@@ -29,5 +35,9 @@ export async function startInteractive(changes) {
     },
   ]);
 
-  inspect({ answers });
+  if (answers.proceedToChangesets) {
+    for (let change of selected) {
+      await writeChangeset(change);
+    }
+  }
 }
