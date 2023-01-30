@@ -1,0 +1,14 @@
+{
+  "ts-node": {
+    "esm": true
+  },
+  "extends": "@tsconfig/node-lts-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "moduleResolution": "nodenext",
+    // We only use tsc for type checking
+    "declaration": true,
+    "noEmit": true
+  },
+  "include": ["./**/*"]
+}
