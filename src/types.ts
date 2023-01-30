@@ -3,8 +3,7 @@ export interface GroupedChange {
   commit: string;
   author: string;
   message: string;
-  workspaces: string[];
-  workspaceNames: string[];
+  workspaces: Project[];
 }
 
 export interface Project {

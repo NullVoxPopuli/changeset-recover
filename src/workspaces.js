@@ -72,21 +72,18 @@ export async function getGroupedChanges(fromBaseReference) {
     commits.map(async (commit) => {
       let files = await filesChangedIn(commit);
 
-      let relevant = projects.filter((project) => {
+      let workspaces = projects.filter((project) => {
         return files.some((file) =>
           file.startsWith(project.gitRootRelativePath)
         );
       });
-
-      let workspaceNames = relevant.map((project) => project.name);
-      let workspaces = relevant.map((project) => project.gitRootRelativePath);
 
       let [author, message] = await Promise.all([
         authorOf(commit),
         messageOf(commit),
       ]);
 
-      return { files, commit, workspaces, workspaceNames, author, message };
+      return { files, commit, workspaces, author, message };
     })
   );
 

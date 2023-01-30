@@ -142,9 +142,14 @@ export function formatMessage(groupedChange, indentSize = 19) {
   let summary = groupedChange.message;
   let indent = ' '.repeat(indentSize);
   let startNewLine = `\n${indent}`;
-  let workspaces = `Affected workspaces: ${groupedChange.workspaceNames.join(
-    ', '
-  )}`;
+  let affectedWorkspaces = groupedChange.workspaces.filter(
+    (project) => !project.private
+  );
+  let workspaces = affectedWorkspaces.length
+    ? `Affected workspaces: ${affectedWorkspaces
+        .map((project) => project.name)
+        .join(', ')}`
+    : 'No affected public workspaces.';
 
   let message = `${chalk.bold.yellow(commit)} | ${workspaces}`;
 
@@ -168,7 +173,7 @@ export function formatMessage(groupedChange, indentSize = 19) {
   })
     .split('\n')
     .map((line) => startNewLine + line)
-    .filter(line => !isEmpty(line))
+    .filter((line) => !isEmpty(line))
     .join('');
 
   message += commitMessage;
@@ -177,8 +182,8 @@ export function formatMessage(groupedChange, indentSize = 19) {
 }
 
 /**
-  * @param {string} line
-  */
+ * @param {string} line
+ */
 function isEmpty(line) {
   return /^\s+$/.test(line);
 }
