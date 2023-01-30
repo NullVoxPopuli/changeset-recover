@@ -4,6 +4,14 @@ export interface GroupedChange {
   author: string;
   message: string;
   workspaces: Project[];
+  // subset of GitHub PR object
+  //  https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28
+  pr?: {
+    number: number;
+    body: string;
+    title: string;
+    closed_at: string;
+  };
 }
 
 export interface Project {

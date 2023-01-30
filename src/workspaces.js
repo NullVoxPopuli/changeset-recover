@@ -8,6 +8,7 @@ import {
   mergesToBranch,
   messageOf,
 } from './git/commits.js';
+import { extractPRNumberFromCommitMessage, getMergedPRs } from './github.js';
 
 /** @type {Array<import('./types.js').Project>} */
 let PROJECTS;
@@ -65,6 +66,7 @@ export async function getGroupedChanges(fromBaseReference) {
 
   console.debug('Calculating changes for ref: ' + tag);
 
+  let prs = await getMergedPRs();
   let commits = await mergesToBranch(tag);
   let projects = await getProjects();
 
@@ -83,7 +85,14 @@ export async function getGroupedChanges(fromBaseReference) {
         messageOf(commit),
       ]);
 
-      return { files, commit, workspaces, author, message };
+      let expectedNumber = extractPRNumberFromCommitMessage(message);
+      let pr;
+
+      if (expectedNumber) {
+        pr = prs.find((pr) => pr.number === expectedNumber);
+      }
+
+      return { files, commit, workspaces, author, message, pr };
     })
   );
 

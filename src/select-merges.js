@@ -141,22 +141,26 @@ export function formatMessage(groupedChange, indentSize = 19) {
   let commit = commitAbbr(groupedChange.commit);
   let summary = groupedChange.message;
   let indent = ' '.repeat(indentSize);
-  let startNewLine = `\n${indent}`;
   let affectedWorkspaces = groupedChange.workspaces.filter(
     (project) => !project.private
   );
   let workspaces = affectedWorkspaces.length
-    ? `Affected workspaces: ${affectedWorkspaces
-        .map((project) => project.name)
+    ? `${chalk.bold.blueBright('Affected workspaces')}: ${affectedWorkspaces
+        .map((project) => chalk.white(project.name))
         .join(', ')}`
     : 'No affected public workspaces.';
 
-  let message = `${chalk.bold.yellow(commit)} | ${workspaces}`;
+  let title = '';
 
-  message = wrapAnsi(message, 80, {
-    // we don't want to break workspaces mid-word
-    hard: false,
-  });
+  if (groupedChange.pr) {
+    title = chalk.italic(groupedChange.pr.title) + '\n';
+  }
+
+  let sub = chalk.dim(summary.split('\n')[0]) + '\n';
+
+  let message = `${chalk.bold.yellow(commit)} | ${title}${sub}${workspaces}`;
+
+  message = wrapAnsi(message, 80);
 
   // indent all but the first line so that we align with the pipe
   message = message
@@ -168,25 +172,15 @@ export function formatMessage(groupedChange, indentSize = 19) {
     })
     .join('\n');
 
-  let commitMessage = wrapAnsi(chalk.dim(summary.split('\n')[0]), 80, {
-    hard: true,
-  })
-    .split('\n')
-    .map((line) => startNewLine + line)
-    .filter((line) => !isEmpty(line))
-    .join('');
-
-  message += commitMessage;
-
   return message;
 }
 
 /**
  * @param {string} line
  */
-function isEmpty(line) {
-  return /^\s+$/.test(line);
-}
+// function isEmpty(line) {
+//   return /^\s+$/.test(line);
+// }
 
 /**
  * @param {string} sha
