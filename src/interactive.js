@@ -6,8 +6,9 @@ import { formatMessage, selectMerges } from './select-merges.js';
 
 /**
  * @param {import('./types.js').GroupedChange[]} changes
+ * @param {string} [ cwd ] defaults to process.cwd()
  */
-export async function startInteractive(changes) {
+export async function startInteractive(changes, cwd = process.cwd()) {
   let selected = await selectMerges(changes);
 
   if (selected.length === 0) {
@@ -37,7 +38,7 @@ export async function startInteractive(changes) {
 
   if (answers.proceedToChangesets) {
     for (let change of selected) {
-      await writeChangeset(change);
+      await writeChangeset(change, cwd);
     }
   }
 }

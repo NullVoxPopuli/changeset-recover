@@ -1,9 +1,9 @@
 import { Octokit } from '@octokit/core';
 import { execaCommand } from 'execa';
 
-export async function getMergedPRs() {
+export async function getMergedPRs(cwd = process.cwd()) {
   let octokit = new Octokit();
-  let { org, repo } = await getOwner();
+  let { org, repo } = await getOwner(cwd);
 
   if (!org || !repo) {
     return [];
@@ -32,12 +32,15 @@ export function extractPRNumberFromCommitMessage(message) {
 }
 
 /**
+ * @param {string} cwd current working directory, defaults to process.cwd()
  * @returns {Promise<{ org?: string | undefined; repo?: string | undefined}>}
  */
-export async function getOwner() {
+export async function getOwner(cwd = process.cwd()) {
   // ❯ git config --get remote.origin.url
   // git@github.com:embroider-build/embroider.git
-  let { stdout } = await execaCommand('git config --get remote.origin.url');
+  let { stdout } = await execaCommand('git config --get remote.origin.url', {
+    cwd,
+  });
 
   let match = /github\.com:(?<org>[^/]+)\/(?<repo>[^.]+)\.git/.exec(stdout);
 
