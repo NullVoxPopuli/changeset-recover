@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [`927d3c2`](https://github.com/NullVoxPopuli/changeset-recover/commit/927d3c2f782446962a1c7fb47eeced61070ffdc9) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Fix workspace detection via fixing git relative and package manager relative paths
+
 ## 0.1.0-beta.1
 
 ### Minor Changes
