@@ -16,13 +16,13 @@ let PROJECTS;
 /**
  * @returns {Promise<Array<import('./types.js').Project>>}
  */
-async function getProjects() {
+async function getProjects(cwd = process.cwd()) {
   if (PROJECTS) return PROJECTS;
 
   let [workspaces, gitRoot, packageManagerRoot] = await Promise.all([
-    project.getWorkspaces(),
-    project.gitRoot(),
-    project.workspaceRoot(),
+    project.getWorkspaces(cwd),
+    project.gitRoot(cwd),
+    project.workspaceRoot(cwd),
   ]);
 
   PROJECTS = [];
@@ -30,9 +30,9 @@ async function getProjects() {
   for (let workspace of workspaces) {
     let info = await packageJson.read(workspace);
     let absolutePath = workspace;
-    let gitRootRelativePath = path.join('.', path.relative(gitRoot, workspace));
+    let gitRootRelativePath = path.join(cwd, path.relative(gitRoot, workspace));
     let packageManagerRelativePath = path.join(
-      '.',
+      cwd,
       path.relative(packageManagerRoot, workspace)
     );
 
@@ -60,19 +60,25 @@ async function getProjects() {
  * Returns the list of changes for each commit since the latest tag
  *
  * @param {string} [ fromBaseReference ] defaults to latest tag
+ * @param {string} [ branch ] defaults to 'main'
+ * @param {string} [ cwd ] defaults to process.cwd()
  */
-export async function getGroupedChanges(fromBaseReference) {
-  let tag = fromBaseReference || (await getLatestTag());
+export async function getGroupedChanges(
+  fromBaseReference,
+  branch = 'main',
+  cwd = process.cwd()
+) {
+  let tag = fromBaseReference || (await getLatestTag(cwd));
 
   console.debug('Calculating changes for ref: ' + tag);
 
-  let prs = await getMergedPRs();
-  let commits = await mergesToBranch(tag);
-  let projects = await getProjects();
+  let prs = await getMergedPRs(cwd);
+  let commits = await mergesToBranch(tag, branch, cwd);
+  let projects = await getProjects(cwd);
 
   let groups = await Promise.all(
     commits.map(async (commit) => {
-      let files = await filesChangedIn(commit);
+      let files = await filesChangedIn(commit, cwd);
 
       let workspaces = projects.filter((project) => {
         return files.some((file) =>
@@ -81,8 +87,8 @@ export async function getGroupedChanges(fromBaseReference) {
       });
 
       let [author, message] = await Promise.all([
-        authorOf(commit),
-        messageOf(commit),
+        authorOf(commit, cwd),
+        messageOf(commit, cwd),
       ]);
 
       let expectedNumber = extractPRNumberFromCommitMessage(message);
