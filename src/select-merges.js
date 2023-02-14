@@ -60,7 +60,7 @@ export async function selectMerges(changes) {
     {
       name: 'commitsToMakeChangesetsFor',
       message: 'Which merges would you like to create changesets for?',
-      pageSize: 30,
+      pageSize: 100,
       type: 'tree',
       multiple: true,
       short: true,

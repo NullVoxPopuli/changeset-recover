@@ -30,11 +30,8 @@ async function getProjects(cwd = process.cwd()) {
   for (let workspace of workspaces) {
     let info = await packageJson.read(workspace);
     let absolutePath = workspace;
-    let gitRootRelativePath = path.join(cwd, path.relative(gitRoot, workspace));
-    let packageManagerRelativePath = path.join(
-      cwd,
-      path.relative(packageManagerRoot, workspace)
-    );
+    let gitRootRelativePath = path.relative(gitRoot, workspace);
+    let packageManagerRelativePath = path.relative(packageManagerRoot, workspace);
 
     let name = info.name;
 
@@ -48,7 +45,7 @@ async function getProjects(cwd = process.cwd()) {
       version: info.version,
       private: info.private ?? false,
       absolutePath,
-      gitRootRelativePath,
+      gitRootRelativePath, 
       packageManagerRelativePath,
     });
   }
@@ -76,6 +73,8 @@ export async function getGroupedChanges(
   let commits = await mergesToBranch(tag, branch, cwd);
   let projects = await getProjects(cwd);
 
+  console.log({ projects });
+
   let groups = await Promise.all(
     commits.map(async (commit) => {
       let files = await filesChangedIn(commit, cwd);
@@ -85,6 +84,8 @@ export async function getGroupedChanges(
           file.startsWith(project.gitRootRelativePath)
         );
       });
+
+      console.log({ workspaces });
 
       let [author, message] = await Promise.all([
         authorOf(commit, cwd),
