@@ -5,6 +5,7 @@
     "changeset-recover": "0.0.0"
   },
   "changesets": [
+    "afraid-fireants-appear",
     "cyan-vans-hear",
     "rich-tables-agree"
   ]
