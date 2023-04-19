@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.7
+
+### Patch Changes
+
+- [`dc3ed4d`](https://github.com/NullVoxPopuli/changeset-recover/commit/dc3ed4dfc4f8d3bf6b88be1b6a9831b1d31611c6) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Fix issue with passing the owner along to the methods that need to be aware of the owner override
+
 ## 0.1.0-beta.6
 
 ### Patch Changes
