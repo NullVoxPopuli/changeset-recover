@@ -3,6 +3,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { getChangesetList, omitTrackedChanges } from './changesets.js';
 import { startInteractive } from './interactive.js';
 import { getGroupedChanges } from './workspaces.js';
 
@@ -12,6 +13,11 @@ yargs(hideBin(process.argv))
     'Generate changesets based on merges to the default branch',
     (yargs) => {
       return yargs
+        .option('limit', {
+          alias: 'l',
+          type: 'number',
+          description: 'Limit the number of detected changes, useful for debugging or incrementally working with changesets'
+        })
         .option('base', {
           alias: 'b',
           type: 'string',
@@ -29,9 +35,17 @@ yargs(hideBin(process.argv))
         });
     },
     async (args) => {
-      let changes = await getGroupedChanges(args.base, args.main, args.path);
+      let changes = await getGroupedChanges(args.base, args.main, args.path, args.limit);
+      let changesets = await getChangesetList(args.path);
+      let untrackedChanges = omitTrackedChanges(changes, changesets);  
 
-      await startInteractive(changes, args.path);
+      if (untrackedChanges.length === 0) {
+        console.info(`All detected changes (${changes.length}) have appropriate changesets`);
+
+        return;
+      }
+
+      await startInteractive(untrackedChanges, args.path);
     }
   )
   .help()

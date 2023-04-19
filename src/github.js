@@ -1,8 +1,9 @@
 import { Octokit } from '@octokit/core';
 import { execaCommand } from 'execa';
 
+let octokit = new Octokit();
+
 export async function getMergedPRs(cwd = process.cwd()) {
-  let octokit = new Octokit();
   let { org, repo } = await getOwner(cwd);
 
   if (!org || !repo) {
@@ -14,7 +15,24 @@ export async function getMergedPRs(cwd = process.cwd()) {
       'state=closed' +
       '&sort=updated' +
       '&direction=desc' +
-      '&per_page=50'
+      '&per_page=200'
+  );
+
+  return response.data;
+}
+
+/**
+  * @param {import('./types.js').PR} pr
+  */
+export async function getCommits(pr, cwd = process.cwd()) {
+  let { org, repo } = await getOwner(cwd);
+
+  if (!org || !repo) {
+    return [];
+  }
+
+  let response = await octokit.request(
+    `GET /repos/${org}/${repo}/pulls/${pr.number}/commits`
   );
 
   return response.data;

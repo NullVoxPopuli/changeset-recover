@@ -8,7 +8,7 @@ import {
   mergesToBranch,
   messageOf,
 } from './git/commits.js';
-import { extractPRNumberFromCommitMessage, getMergedPRs } from './github.js';
+import { extractPRNumberFromCommitMessage, getCommits, getMergedPRs } from './github.js';
 
 /** @type {Array<import('./types.js').Project>} */
 let PROJECTS;
@@ -66,7 +66,8 @@ async function getProjects(cwd = process.cwd()) {
 export async function getGroupedChanges(
   fromBaseReference,
   branch = 'main',
-  cwd = process.cwd()
+  cwd = process.cwd(),
+  limit = Infinity,
 ) {
   let tag = fromBaseReference || (await getLatestTag(cwd));
 
@@ -75,6 +76,10 @@ export async function getGroupedChanges(
   let prs = await getMergedPRs(cwd);
   let commits = await mergesToBranch(tag, branch, cwd);
   let projects = await getProjects(cwd);
+
+  if (limit !== Infinity) {
+    commits = commits.slice(0, limit);
+  }
 
   let groups = await Promise.all(
     commits.map(async (commit) => {
@@ -93,12 +98,19 @@ export async function getGroupedChanges(
 
       let expectedNumber = extractPRNumberFromCommitMessage(message);
       let pr;
+      let authors = [];
 
       if (expectedNumber) {
         pr = prs.find((pr) => pr.number === expectedNumber);
+
+        if (pr) {
+          let prCommits = await getCommits(pr, cwd);
+
+          authors = prCommits.map(commit => commit.author.login);
+        }
       }
 
-      return { files, commit, workspaces, author, message, pr };
+      return { files, commit, workspaces, author, message, pr, authors };
     })
   );
 
