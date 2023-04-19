@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/core';
 import { execaCommand } from 'execa';
 
-let octokit = new Octokit();
+let octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] });
 
 export async function getMergedPRs(cwd = process.cwd()) {
   let { org, repo } = await getOwner(cwd);
