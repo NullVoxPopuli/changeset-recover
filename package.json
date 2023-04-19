@@ -22,6 +22,7 @@
     "chalk": "^5.2.0",
     "ember-apply": "^2.6.2",
     "execa": "^6.1.0",
+    "globby": "^13.1.4",
     "inquirer": "^9.1.4",
     "inquirer-tree-prompt": "github:NullVoxPopuli/inquirer-tree-prompt#esm-ify",
     "wrap-ansi": "^8.1.0",

@@ -137,7 +137,7 @@ function filterBots(changes) {
  * @param {import('./types.js').GroupedChange} groupedChange
  * @param {number} [indentSize]
  */
-export function formatMessage(groupedChange, indentSize = 19) {
+export function formatMessage(groupedChange, indentSize = 19, oneLine = true) {
   let commit = commitAbbr(groupedChange.commit);
   let summary = groupedChange.message;
   let indent = ' '.repeat(indentSize);
@@ -151,26 +151,32 @@ export function formatMessage(groupedChange, indentSize = 19) {
     : 'No affected public workspaces.';
 
   let title = '';
+  let lineEnding = oneLine ? '' : '\n';
 
   if (groupedChange.pr) {
-    title = chalk.italic(groupedChange.pr.title) + '\n';
+    title = chalk.italic(groupedChange.pr.title) + lineEnding;
   }
 
-  let sub = chalk.dim(summary.split('\n')[0]) + '\n';
+  let sub = oneLine ? ' | ' : chalk.dim(summary.split('\n')[0]) + lineEnding;
+  let pr = `PR#${groupedChange.pr?.number}`;
 
-  let message = `${chalk.bold.yellow(commit)} | ${title}${sub}${workspaces}`;
+  let message = `${chalk.bold.yellow(
+    commit
+  )} | ${pr} | ${title}${sub}${workspaces}`;
 
-  message = wrapAnsi(message, 80);
+  if (!oneLine) {
+    message = wrapAnsi(message, 80);
 
-  // indent all but the first line so that we align with the pipe
-  message = message
-    .split('\n')
-    .map((line, index) => {
-      if (index === 0) return line;
+    // indent all but the first line so that we align with the pipe
+    message = message
+      .split('\n')
+      .map((line, index) => {
+        if (index === 0) return line;
 
-      return indent + line;
-    })
-    .join('\n');
+        return indent + line;
+      })
+      .join('\n');
+  }
 
   return message;
 }

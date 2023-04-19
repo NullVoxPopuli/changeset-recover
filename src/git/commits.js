@@ -56,7 +56,11 @@ export async function getLatestTag(cwd = process.cwd()) {
   // Examples:
   //   ember-resources@5.6.2
   //  (same output as git tag -l)
-  let { stdout: tag } = await execaCommand(`git describe --abbrev=0`, { cwd });
+  //
+  //  Except... "latest"
+  let { stdout: tag } = await execaCommand(`git describe --tags --abbrev=0`, {
+    cwd,
+  });
 
   return tag;
 }

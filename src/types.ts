@@ -1,17 +1,22 @@
+// subset of GitHub PR object
+//  https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28
+export interface PR {
+  number: number;
+  html_url: string;
+  body: string;
+  title: string;
+  closed_at: string;
+}
 export interface GroupedChange {
   files: string[];
   commit: string;
+  // PR author
   author: string;
+  // detected authors from commits
+  authors: string[];
   message: string;
   workspaces: Project[];
-  // subset of GitHub PR object
-  //  https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28
-  pr?: {
-    number: number;
-    body: string;
-    title: string;
-    closed_at: string;
-  };
+  pr?: PR;
 }
 
 export interface Project {
