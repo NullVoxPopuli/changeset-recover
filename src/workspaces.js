@@ -66,12 +66,15 @@ async function getProjects(cwd = process.cwd()) {
  * @param {string} [ fromBaseReference ] defaults to latest tag
  * @param {string} [ branch ] defaults to 'main'
  * @param {string} [ cwd ] defaults to process.cwd()
+ * @param {number} [ limit ]
+ * @param [string} [ owner ]
  */
 export async function getGroupedChanges(
   fromBaseReference,
   branch = 'main',
   cwd = process.cwd(),
-  limit = Infinity
+  limit = Infinity,
+  owner = null
 ) {
   let tag = fromBaseReference || (await getLatestTag(cwd));
 
@@ -108,7 +111,7 @@ export async function getGroupedChanges(
         pr = prs.find((pr) => pr.number === expectedNumber);
 
         if (pr) {
-          let prCommits = await getCommits(pr, cwd);
+          let prCommits = await getCommits(pr, owner, cwd);
 
           authors = prCommits.map((commit) => commit.author.login);
         }

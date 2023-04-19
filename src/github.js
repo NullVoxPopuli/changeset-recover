@@ -3,11 +3,15 @@ import { execaCommand } from 'execa';
 
 let octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] });
 
-export async function getMergedPRs(cwd = process.cwd()) {
+export async function getMergedPRs(cwd = process.cwd(), owner = null) {
   let { org, repo } = await getOwner(cwd);
 
   if (!org || !repo) {
     return [];
+  }
+
+  if (owner) {
+    org = owner;
   }
 
   let response = await octokit.request(
@@ -24,11 +28,15 @@ export async function getMergedPRs(cwd = process.cwd()) {
 /**
  * @param {import('./types.js').PR} pr
  */
-export async function getCommits(pr, cwd = process.cwd()) {
+export async function getCommits(pr, owner = null, cwd = process.cwd()) {
   let { org, repo } = await getOwner(cwd);
 
   if (!org || !repo) {
     return [];
+  }
+
+  if (owner) {
+    org = owner;
   }
 
   let response = await octokit.request(

@@ -19,6 +19,10 @@ yargs(hideBin(process.argv))
           description:
             'Limit the number of detected changes, useful for debugging or incrementally working with changesets',
         })
+        .option('owner', {
+          type: 'string',
+          description: 'Set the GitHub owner of the repository to read from',
+        })
         .option('non-interactive', {
           type: 'boolean',
           description:
