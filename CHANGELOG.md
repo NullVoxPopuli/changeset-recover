@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.10
+
+### Patch Changes
+
+- [`e0a5904`](https://github.com/NullVoxPopuli/changeset-recover/commit/e0a59042ec1636b857cadd6f280454a9943f5da2) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - GitHub author aliases are not auto-linked, links are manually created now
+
 ## 0.1.0-beta.9
 
 ### Patch Changes
