@@ -16,7 +16,8 @@ yargs(hideBin(process.argv))
         .option('limit', {
           alias: 'l',
           type: 'number',
-          description: 'Limit the number of detected changes, useful for debugging or incrementally working with changesets'
+          description:
+            'Limit the number of detected changes, useful for debugging or incrementally working with changesets',
         })
         .option('base', {
           alias: 'b',
@@ -35,12 +36,19 @@ yargs(hideBin(process.argv))
         });
     },
     async (args) => {
-      let changes = await getGroupedChanges(args.base, args.main, args.path, args.limit);
+      let changes = await getGroupedChanges(
+        args.base,
+        args.main,
+        args.path,
+        args.limit
+      );
       let changesets = await getChangesetList(args.path);
-      let untrackedChanges = omitTrackedChanges(changes, changesets);  
+      let untrackedChanges = omitTrackedChanges(changes, changesets);
 
       if (untrackedChanges.length === 0) {
-        console.info(`All detected changes (${changes.length}) have appropriate changesets`);
+        console.info(
+          `All detected changes (${changes.length}) have appropriate changesets`
+        );
 
         return;
       }

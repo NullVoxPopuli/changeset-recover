@@ -8,7 +8,11 @@ import {
   mergesToBranch,
   messageOf,
 } from './git/commits.js';
-import { extractPRNumberFromCommitMessage, getCommits, getMergedPRs } from './github.js';
+import {
+  extractPRNumberFromCommitMessage,
+  getCommits,
+  getMergedPRs,
+} from './github.js';
 
 /** @type {Array<import('./types.js').Project>} */
 let PROJECTS;
@@ -67,7 +71,7 @@ export async function getGroupedChanges(
   fromBaseReference,
   branch = 'main',
   cwd = process.cwd(),
-  limit = Infinity,
+  limit = Infinity
 ) {
   let tag = fromBaseReference || (await getLatestTag(cwd));
 
@@ -106,7 +110,7 @@ export async function getGroupedChanges(
         if (pr) {
           let prCommits = await getCommits(pr, cwd);
 
-          authors = prCommits.map(commit => commit.author.login);
+          authors = prCommits.map((commit) => commit.author.login);
         }
       }
 

@@ -22,8 +22,8 @@ export async function getMergedPRs(cwd = process.cwd()) {
 }
 
 /**
-  * @param {import('./types.js').PR} pr
-  */
+ * @param {import('./types.js').PR} pr
+ */
 export async function getCommits(pr, cwd = process.cwd()) {
   let { org, repo } = await getOwner(cwd);
 

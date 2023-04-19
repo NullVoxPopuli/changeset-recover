@@ -160,7 +160,9 @@ export function formatMessage(groupedChange, indentSize = 19, oneLine = true) {
   let sub = oneLine ? ' | ' : chalk.dim(summary.split('\n')[0]) + lineEnding;
   let pr = `PR#${groupedChange.pr?.number}`;
 
-  let message = `${chalk.bold.yellow(commit)} | ${pr} | ${title}${sub}${workspaces}`;
+  let message = `${chalk.bold.yellow(
+    commit
+  )} | ${pr} | ${title}${sub}${workspaces}`;
 
   if (!oneLine) {
     message = wrapAnsi(message, 80);
