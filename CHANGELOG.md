@@ -1,5 +1,13 @@
 # changeset-recover
 
+## 0.1.0-beta.8
+
+### Patch Changes
+
+- [`28e284b`](https://github.com/NullVoxPopuli/changeset-recover/commit/28e284b149dca9dda48d7d65522d3ebc4bc58a69) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Support an ignore file, .changeset/recoverignore
+
+- [`2fdbd27`](https://github.com/NullVoxPopuli/changeset-recover/commit/2fdbd27f3492aaf35f985ae2a601c590ccdf9779) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Support --only-prs flag
+
 ## 0.1.0-beta.7
 
 ### Patch Changes
