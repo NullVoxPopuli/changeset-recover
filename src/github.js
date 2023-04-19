@@ -51,11 +51,18 @@ export function extractPRNumberFromCommitMessage(message) {
   return numStr ? parseInt(numStr, 10) : undefined;
 }
 
+/** @type {{ org: string; repo: string; }} */
+let owner;
+
 /**
  * @param {string} cwd current working directory, defaults to process.cwd()
  * @returns {Promise<{ org: string; repo: string}>}
  */
 export async function getOwner(cwd = process.cwd()) {
+  if (owner) {
+    return owner;
+  }
+
   // ❯ git config --get remote.origin.url
   // git@github.com:embroider-build/embroider.git
   let { stdout } = await execaCommand('git config --get remote.origin.url', {
@@ -82,5 +89,7 @@ export async function getOwner(cwd = process.cwd()) {
     );
   }
 
-  return { org, repo };
+  owner = { org, repo };
+
+  return owner;
 }

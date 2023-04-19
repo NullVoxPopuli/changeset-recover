@@ -1,3 +1,4 @@
+import fse from 'fs-extra';
 import { globby } from 'globby';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -33,6 +34,7 @@ export async function writeChangeset(change, cwd = process.cwd()) {
 
   let text =
     `---\n` +
+      `# Change from: ${change.commit}\n` +
       `# each of these should be one of "patch", "minor", "major"\n` +
       publicPackages.map((project) => `"${project.name}": TODO\n`).join('') +
       '---\n' +
@@ -76,4 +78,35 @@ export function omitTrackedChanges(changes, changesets) {
   };
 
   return changes.filter((change) => !hasCommit(change.commit));
+}
+
+/**
+ * @param {import('./types.js').GroupedChange[]} changes;
+ * @param {string} [cwd]
+ */
+export async function omitIgnoredChanges(changes, cwd = process.cwd()) {
+  if (changes.length === 0) {
+    return changes;
+  }
+
+  let ignoreFile = path.join(cwd, '.changeset', '.recoverignore');
+  let ignoreExists = await fse.pathExists(ignoreFile);
+
+  if (!ignoreExists) {
+    console.debug(
+      `.changeset/.recoverignore file not found, all ${changes.length} changes included`
+    );
+
+    return changes;
+  }
+
+  let file = await fs.readFile(ignoreFile);
+  let fileContents = file.toString();
+  let lines = fileContents.split('\n').map((line) => line.trim());
+
+  let ignoredCommits = new Set(lines);
+  /** @type { (commit: string) => boolean } */
+  let isIgnored = (commit) => ignoredCommits.has(commit);
+
+  return changes.filter((change) => !isIgnored(change.commit));
 }

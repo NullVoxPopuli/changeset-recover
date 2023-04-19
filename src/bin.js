@@ -3,7 +3,11 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { getChangesetList, omitTrackedChanges } from './changesets.js';
+import {
+  getChangesetList,
+  omitIgnoredChanges,
+  omitTrackedChanges,
+} from './changesets.js';
 import { startInteractive } from './interactive.js';
 import { getGroupedChanges } from './workspaces.js';
 
@@ -53,7 +57,9 @@ yargs(hideBin(process.argv))
         args.owner
       );
       let changesets = await getChangesetList(args.path);
-      let untrackedChanges = omitTrackedChanges(changes, changesets);
+      let untrackedChanges = omitTrackedChanges(changes, changesets, args.path);
+
+      untrackedChanges = await omitIgnoredChanges(changes, args.path);
 
       if (untrackedChanges.length === 0) {
         console.info(
