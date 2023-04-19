@@ -68,9 +68,13 @@ export async function getOwner(cwd = process.cwd()) {
     cwd,
   });
 
-  let match = /github\.com:(?<org>[^/]+)\/(?<repo>[^.]+)\.git/.exec(stdout);
+  let match = /github\.com(:|\/)(?<org>[^/]+)\/(?<repo>[^.]+)\.git/.exec(
+    stdout
+  );
 
-  if (!match) return {};
+  if (!match) {
+    return {};
+  }
 
   let { org, repo } = match.groups || {};
 
