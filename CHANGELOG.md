@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- [`17311c6`](https://github.com/NullVoxPopuli/changeset-recover/commit/17311c61a9dd2477636ba9abb85f2b2ec873bd38) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Revert back to using abbrev=0
+
 ## 0.1.0-beta.4
 
 ### Patch Changes
