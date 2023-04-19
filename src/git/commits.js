@@ -58,7 +58,7 @@ export async function getLatestTag(cwd = process.cwd()) {
   //  (same output as git tag -l)
   //
   //  Except... "latest"
-  let { stdout: tag } = await execaCommand(`git describe --tags --always`, {
+  let { stdout: tag } = await execaCommand(`git describe --tags --abbrev=0`, {
     cwd,
   });
 
