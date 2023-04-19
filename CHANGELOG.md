@@ -1,5 +1,15 @@
 # changeset-recover
 
+## 0.1.0-beta.3
+
+### Minor Changes
+
+- [#9](https://github.com/NullVoxPopuli/changeset-recover/pull/9) [`5af3529`](https://github.com/NullVoxPopuli/changeset-recover/commit/5af35294e6519cce05ffb721bb4381c67895fdff) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Support non-interactive mode via --non-interactive CLI flag
+
+### Patch Changes
+
+- [#7](https://github.com/NullVoxPopuli/changeset-recover/pull/7) [`0719320`](https://github.com/NullVoxPopuli/changeset-recover/commit/0719320e9d38825761fed852802db3c97c8ef63b) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Make the generated changelog files more concise, but add links to the real PR submissions so that the maintainers can more quickly figure out impact and if more details are needed
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
