@@ -1,6 +1,6 @@
 {
   "name": "changeset-recover",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "license": "MIT",
   "author": "NullVoxPopuli",
   "description": "recover utility to generate changeset (https://github.com/changesets/changesets)  entries when they'd previously been forgetten. \nGives library maintainers a chance to double check merged work without fear of  missing attribution in the CHANGELOG. \n",
