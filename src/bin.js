@@ -49,7 +49,8 @@ yargs(hideBin(process.argv))
         args.base,
         args.main,
         args.path,
-        args.limit
+        args.limit,
+        args.owner
       );
       let changesets = await getChangesetList(args.path);
       let untrackedChanges = omitTrackedChanges(changes, changesets);

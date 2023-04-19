@@ -67,7 +67,7 @@ async function getProjects(cwd = process.cwd()) {
  * @param {string} [ branch ] defaults to 'main'
  * @param {string} [ cwd ] defaults to process.cwd()
  * @param {number} [ limit ]
- * @param [string} [ owner ]
+ * @param {string} [ owner ]
  */
 export async function getGroupedChanges(
   fromBaseReference,
@@ -80,7 +80,7 @@ export async function getGroupedChanges(
 
   console.debug('Calculating changes for ref: ' + tag);
 
-  let prs = await getMergedPRs(cwd);
+  let prs = await getMergedPRs(cwd, owner);
   let commits = await mergesToBranch(tag, branch, cwd);
   let projects = await getProjects(cwd);
 

@@ -6,11 +6,8 @@ let octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] });
 export async function getMergedPRs(cwd = process.cwd(), owner = null) {
   let { org, repo } = await getOwner(cwd);
 
-  if (!org || !repo) {
-    return [];
-  }
-
   if (owner) {
+    console.debug(`Repo: ${org}/${repo} overridden with ${owner}/${repo}`);
     org = owner;
   }
 
@@ -31,11 +28,8 @@ export async function getMergedPRs(cwd = process.cwd(), owner = null) {
 export async function getCommits(pr, owner = null, cwd = process.cwd()) {
   let { org, repo } = await getOwner(cwd);
 
-  if (!org || !repo) {
-    return [];
-  }
-
   if (owner) {
+    console.debug(`Repo: ${org}/${repo} overridden with ${owner}/${repo}`);
     org = owner;
   }
 
@@ -59,7 +53,7 @@ export function extractPRNumberFromCommitMessage(message) {
 
 /**
  * @param {string} cwd current working directory, defaults to process.cwd()
- * @returns {Promise<{ org?: string | undefined; repo?: string | undefined}>}
+ * @returns {Promise<{ org: string; repo: string}>}
  */
 export async function getOwner(cwd = process.cwd()) {
   // ❯ git config --get remote.origin.url
@@ -68,15 +62,25 @@ export async function getOwner(cwd = process.cwd()) {
     cwd,
   });
 
-  let match = /github\.com(:|\/)(?<org>[^/]+)\/(?<repo>[^.]+)\.git/.exec(
+  // 3 Formats
+  //   https://github.com/NullVoxPopuli/embroider
+  //   https://github.com/NullVoxPopuli/embroider.git
+  //   git@github.com:NullVoxPopuli/embroider.git
+  let match = /github\.com(:|\/)(?<org>[^/]+)\/(?<repo>[^.]+)(\.git)?/.exec(
     stdout
   );
 
   if (!match) {
-    return {};
+    throw new Error(`URL was not recognized. Received: ${stdout}`);
   }
 
   let { org, repo } = match.groups || {};
+
+  if (!org || !repo) {
+    throw new Error(
+      `Regex failure: org (${org}) or repo (${repo}) were not detected from the URL: ${stdout}`
+    );
+  }
 
   return { org, repo };
 }
