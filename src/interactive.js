@@ -8,12 +8,29 @@ import { formatMessage, selectMerges } from './select-merges.js';
  * @param {import('./types.js').GroupedChange[]} changes
  * @param {string} [ cwd ] defaults to process.cwd()
  */
-export async function startInteractive(changes, cwd = process.cwd()) {
-  let selected = await selectMerges(changes);
+export async function startInteractive(
+  changes,
+  cwd = process.cwd(),
+  nonInteractive = false
+) {
+  let interactive = !nonInteractive;
+  let selected = changes;
+
+  if (interactive) {
+    selected = await selectMerges(changes);
+  }
 
   if (selected.length === 0) {
     console.info('No changes were selected');
     process.exit(0);
+  }
+
+  if (nonInteractive) {
+    for (let change of selected) {
+      await writeChangeset(change, cwd);
+    }
+
+    return;
   }
 
   let formatted = selected

@@ -19,6 +19,11 @@ yargs(hideBin(process.argv))
           description:
             'Limit the number of detected changes, useful for debugging or incrementally working with changesets',
         })
+        .option('non-interactive', {
+          type: 'boolean',
+          description:
+            'skip interactive prompts -- all options will be accepted, except if opted out via config file',
+        })
         .option('base', {
           alias: 'b',
           type: 'string',
@@ -53,7 +58,7 @@ yargs(hideBin(process.argv))
         return;
       }
 
-      await startInteractive(untrackedChanges, args.path);
+      await startInteractive(untrackedChanges, args.path, args.nonInteractive);
     }
   )
   .help()
