@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.9
+
+### Patch Changes
+
+- [`f9af352`](https://github.com/NullVoxPopuli/changeset-recover/commit/f9af3526504bf7ad42301db44ba54ac1da7a0d6d) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - fix markdown typo
+
 ## 0.1.0-beta.8
 
 ### Patch Changes
