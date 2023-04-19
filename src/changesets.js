@@ -20,9 +20,12 @@ export async function writeChangeset(change, cwd = process.cwd()) {
   let prText;
 
   if (change.pr) {
+    /** @type {(login: string) => string } */
+    let link = (login) => `[@${login}](https://github.com/${login})`;
+
     // GitHub makes these links for us automatically
     let authorLinks = new Set(
-      change.authors.map((authorLogin) => `@${authorLogin}`)
+      change.authors.map((authorLogin) => link(authorLogin))
     );
 
     message = change.pr.title + '\n\n' + change.pr.body;
