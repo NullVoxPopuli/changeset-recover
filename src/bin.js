@@ -11,6 +11,27 @@ import {
 import { startInteractive } from './interactive.js';
 import { getGroupedChanges } from './workspaces.js';
 
+function logOptions(args) {
+  let specified = [];
+  let format = (argName) => `\t--${argName} ${args[argName]}`;
+
+  let names = [
+    'limit',
+    'owner',
+    'non-interactive',
+    'only-prs',
+    'base',
+    'main',
+    'path',
+  ];
+
+  for (let name of names) {
+    if (args[name]) specified.push(format(name));
+  }
+
+  console.debug(`Active options: \n` + specified.join('\n'));
+}
+
 yargs(hideBin(process.argv))
   .command(
     ['$0'],
@@ -32,6 +53,12 @@ yargs(hideBin(process.argv))
           description:
             'skip interactive prompts -- all options will be accepted, except if opted out via config file',
         })
+        .option('only-prs', {
+          type: 'boolean',
+          description:
+            'only include changes that come from PRs, ignore direct commits to the main branch',
+          default: false,
+        })
         .option('base', {
           alias: 'b',
           type: 'string',
@@ -49,27 +76,33 @@ yargs(hideBin(process.argv))
         });
     },
     async (args) => {
-      let changes = await getGroupedChanges(
-        args.base,
-        args.main,
-        args.path,
-        args.limit,
-        args.owner
-      );
+      logOptions(args);
+
+      let changes = await getGroupedChanges({
+        fromBaseReference: args.base,
+        branch: args.main,
+        cwd: args.path,
+        limit: args.limit,
+        owner: args.owner,
+        onlyPRs: args.onlyPrs,
+      });
       let changesets = await getChangesetList(args.path);
-      let untrackedChanges = omitTrackedChanges(changes, changesets, args.path);
+      let untrackedChanges = omitTrackedChanges(changes, changesets);
 
-      untrackedChanges = await omitIgnoredChanges(changes, args.path);
+      let remainingChanges = await omitIgnoredChanges(
+        untrackedChanges,
+        args.path
+      );
 
-      if (untrackedChanges.length === 0) {
+      if (remainingChanges.length === 0) {
         console.info(
-          `All detected changes (${changes.length}) have appropriate changesets`
+          `All detected changes (${changes.length}) have appropriate changesets (or were manually ignored via the .changeset/.recoverignore file)`
         );
 
         return;
       }
 
-      await startInteractive(untrackedChanges, args.path, args.nonInteractive);
+      await startInteractive(remainingChanges, args.path, args.nonInteractive);
     }
   )
   .help()

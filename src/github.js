@@ -3,13 +3,12 @@ import { execaCommand } from 'execa';
 
 let octokit = new Octokit({ auth: process.env['GITHUB_TOKEN'] });
 
+/**
+ * @param {string} [cwd]
+ * @param {string} [owner]
+ */
 export async function getMergedPRs(cwd = process.cwd(), owner = null) {
-  let { org, repo } = await getOwner(cwd);
-
-  if (owner) {
-    console.debug(`Repo: ${org}/${repo} overridden with ${owner}/${repo}`);
-    org = owner;
-  }
+  let { org, repo } = await getOwner(cwd, owner);
 
   let response = await octokit.request(
     `GET /repos/${org}/${repo}/pulls?` +
@@ -24,14 +23,11 @@ export async function getMergedPRs(cwd = process.cwd(), owner = null) {
 
 /**
  * @param {import('./types.js').PR} pr
+ * @param {string} [owner]
+ * @param {string} [cwd]
  */
-export async function getCommits(pr, owner = null, cwd = process.cwd()) {
-  let { org, repo } = await getOwner(cwd);
-
-  if (owner) {
-    console.debug(`Repo: ${org}/${repo} overridden with ${owner}/${repo}`);
-    org = owner;
-  }
+export async function getCommits(pr, owner, cwd = process.cwd()) {
+  let { org, repo } = await getOwner(cwd, owner);
 
   let response = await octokit.request(
     `GET /repos/${org}/${repo}/pulls/${pr.number}/commits`
@@ -52,15 +48,16 @@ export function extractPRNumberFromCommitMessage(message) {
 }
 
 /** @type {{ org: string; repo: string; }} */
-let owner;
+let repoInfo;
 
 /**
  * @param {string} cwd current working directory, defaults to process.cwd()
+ * @param {string} [owner] override the org / owner
  * @returns {Promise<{ org: string; repo: string}>}
  */
-export async function getOwner(cwd = process.cwd()) {
-  if (owner) {
-    return owner;
+export async function getOwner(cwd = process.cwd(), owner) {
+  if (repoInfo) {
+    return repoInfo;
   }
 
   // ❯ git config --get remote.origin.url
@@ -89,7 +86,12 @@ export async function getOwner(cwd = process.cwd()) {
     );
   }
 
-  owner = { org, repo };
+  repoInfo = { org, repo };
 
-  return owner;
+  if (owner) {
+    console.debug(`Repo: ${org}/${repo} overridden with ${owner}/${repo}`);
+    repoInfo.org = owner;
+  }
+
+  return repoInfo;
 }

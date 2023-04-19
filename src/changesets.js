@@ -35,7 +35,8 @@ export async function writeChangeset(change, cwd = process.cwd()) {
   let text =
     `---\n` +
       `# Change from: ${change.commit}\n` +
-      `# each of these should be one of "patch", "minor", "major"\n` +
+      `#\n` +
+      `# Each of these should be one of "patch", "minor", "major"\n` +
       publicPackages.map((project) => `"${project.name}": TODO\n`).join('') +
       '---\n' +
       '\n' +

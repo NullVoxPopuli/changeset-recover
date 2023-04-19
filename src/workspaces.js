@@ -63,19 +63,24 @@ async function getProjects(cwd = process.cwd()) {
 /**
  * Returns the list of changes for each commit since the latest tag
  *
- * @param {string} [ fromBaseReference ] defaults to latest tag
- * @param {string} [ branch ] defaults to 'main'
- * @param {string} [ cwd ] defaults to process.cwd()
- * @param {number} [ limit ]
- * @param {string} [ owner ]
+ * @typedef {object} GetGroupedChangesOptions
+ * @property {string} [ fromBaseReference ] defaults to latest tag
+ * @property {string} [ branch ] defaults to 'main'
+ * @property {string} [ cwd ] defaults to process.cwd()
+ * @property {number} [ limit ]
+ * @property {string} [ owner ]
+ * @property{boolean} [onlyPRs]
+ *
+ * @param {GetGroupedChangesOptions} options
  */
-export async function getGroupedChanges(
-  fromBaseReference,
-  branch = 'main',
-  cwd = process.cwd(),
-  limit = Infinity,
-  owner = null
-) {
+export async function getGroupedChanges(options) {
+  let fromBaseReference = options.fromBaseReference;
+  let branch = options.branch ?? 'main';
+  let cwd = options.cwd ?? process.cwd();
+  let limit = options.limit ?? Infinity;
+  let owner = options.owner;
+  let onlyPRs = options.onlyPRs ?? false;
+
   let tag = fromBaseReference || (await getLatestTag(cwd));
 
   console.debug('Calculating changes for ref: ' + tag);
@@ -114,12 +119,16 @@ export async function getGroupedChanges(
           let prCommits = await getCommits(pr, owner, cwd);
 
           authors = prCommits.map((commit) => commit.author.login);
+        } else if (onlyPRs) {
+          return;
         }
+      } else if (onlyPRs) {
+        return;
       }
 
       return { files, commit, workspaces, author, message, pr, authors };
     })
   );
 
-  return groups;
+  return groups.filter(Boolean);
 }
