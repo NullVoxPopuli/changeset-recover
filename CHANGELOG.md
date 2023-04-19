@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [`34cc04a`](https://github.com/NullVoxPopuli/changeset-recover/commit/34cc04a89f92252c6f88c3fdeec7186d17a7969d) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Allow changing which org/owner we look at"
+
 ## 0.1.0-beta.3
 
 ### Minor Changes
