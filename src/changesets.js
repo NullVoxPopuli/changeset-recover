@@ -27,7 +27,7 @@ export async function writeChangeset(change, cwd = process.cwd()) {
 
     message = change.pr.title + '\n\n' + change.pr.body;
     prText =
-      `[#${change.pr.number}](${change.pr.html_url}` +
+      `[#${change.pr.number}](${change.pr.html_url})` +
       ` : ${change.pr.title}` +
       ` : _by ${[...authorLinks.values()].join(', ')}_`;
   }
