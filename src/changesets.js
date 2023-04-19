@@ -16,24 +16,28 @@ export async function writeChangeset(change, cwd = process.cwd()) {
   );
 
   let message = change.message;
+  let prText;
 
   if (change.pr) {
     // GitHub makes these links for us automatically
-    let authorLinks = change.authors.map((authorLogin) => `@${authorLogin}`);
+    let authorLinks = new Set(
+      change.authors.map((authorLogin) => `@${authorLogin}`)
+    );
 
-    message =
+    message = change.pr.title + '\n\n' + change.pr.body;
+    prText =
       `[#${change.pr.number}](${change.pr.html_url}` +
       ` : ${change.pr.title}` +
-      ` by ${authorLinks}`;
+      ` : _by ${[...authorLinks.values()].join(', ')}_`;
   }
 
   let text =
     `---\n` +
-    `# each of these should be one of "patch", "minor", "major"\n` +
-    publicPackages.map((project) => `"${project.name}": TODO\n`).join('') +
-    '---\n' +
-    '\n' +
-    message;
+      `# each of these should be one of "patch", "minor", "major"\n` +
+      publicPackages.map((project) => `"${project.name}": TODO\n`).join('') +
+      '---\n' +
+      '\n' +
+      prText || message;
 
   await fs.writeFile(filePath, text);
 }
