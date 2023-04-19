@@ -1,5 +1,11 @@
 # changeset-recover
 
+## 0.1.0-beta.6
+
+### Patch Changes
+
+- [`f1d7cbc`](https://github.com/NullVoxPopuli/changeset-recover/commit/f1d7cbc6f2ff012144ea369b819fb1e3d91cc68d) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Fix GitHub generation
+
 ## 0.1.0-beta.5
 
 ### Patch Changes
