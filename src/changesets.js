@@ -35,17 +35,45 @@ export async function writeChangeset(change, cwd = process.cwd()) {
       ` : _by ${[...authorLinks.values()].join(', ')}_`;
   }
 
+  let impact = determineImpactViaLabel(change.pr);
+
   let text =
     `---\n` +
       `# Change from: ${change.commit}\n` +
       `#\n` +
       `# Each of these should be one of "patch", "minor", "major"\n` +
-      publicPackages.map((project) => `"${project.name}": TODO\n`).join('') +
+      publicPackages
+        .map((project) => `"${project.name}": ${impact}\n`)
+        .join('') +
       '---\n' +
       '\n' +
       prText || message;
 
   await fs.writeFile(filePath, text);
+}
+
+/**
+ * @param {undefined | import('./types.js').PR} pr
+ * @returns {'TODO' | 'minor' | 'major' | 'patch'}
+ */
+function determineImpactViaLabel(pr) {
+  if (!pr) return 'TODO';
+
+  let labels = pr.labels.map((label) => label.name);
+
+  if (labels.includes('major')) {
+    return 'major';
+  }
+
+  if (labels.includes('minor')) {
+    return 'minor';
+  }
+
+  if (labels.includes('patch')) {
+    return 'patch';
+  }
+
+  return 'TODO';
 }
 
 /**

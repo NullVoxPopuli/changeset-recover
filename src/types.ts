@@ -5,8 +5,19 @@ export interface PR {
   html_url: string;
   body: string;
   title: string;
+  labels: Label[];
   closed_at: string;
 }
+
+interface Label {
+  id: number;
+  url: string;
+  name: 'patch' | 'minor' | 'major' | string;
+  color: string;
+  default: boolean;
+  description: string;
+}
+
 export interface GroupedChange {
   files: string[];
   commit: string;
