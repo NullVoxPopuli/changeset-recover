@@ -1,5 +1,17 @@
 # changeset-recover
 
+## 0.1.0-beta.11
+
+### Minor Changes
+
+- [#17](https://github.com/NullVoxPopuli/changeset-recover/pull/17) [`91a6c51`](https://github.com/NullVoxPopuli/changeset-recover/commit/91a6c51cfb7db5d0dd5f2778946c6e687c351cde) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Support commits from non-merges
+
+- [#20](https://github.com/NullVoxPopuli/changeset-recover/pull/20) [`58d96e3`](https://github.com/NullVoxPopuli/changeset-recover/commit/58d96e3cb947a8618ff24b5e0f6e1cf4d032d9d6) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Support using GitHub labels on PRs for setting patch/minor/major, completing the ability to stay out of the CLI when using changeset-recover
+
+### Patch Changes
+
+- [#19](https://github.com/NullVoxPopuli/changeset-recover/pull/19) [`cd5b4cf`](https://github.com/NullVoxPopuli/changeset-recover/commit/cd5b4cfc3fedcbd09c39ee562e9f9e165ca9335e) Thanks [@NullVoxPopuli](https://github.com/NullVoxPopuli)! - Fix bulk / top-level tree selection for quicke manual commit selection
+
 ## 0.1.0-beta.10
 
 ### Patch Changes
