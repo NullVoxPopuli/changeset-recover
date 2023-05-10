@@ -3,8 +3,8 @@ import path from 'node:path';
 
 import { authorOf } from './git/author.js';
 import {
-    commitsForMerge,
-    commitsSince,
+  commitsForMerge,
+  commitsSince,
   filesChangedIn,
   getLatestTag,
   mergesToBranch,
@@ -144,24 +144,24 @@ export async function getGroupedChanges(options) {
 }
 
 /**
-  * For a given set of commits (and merge commits), 
-  * this function will group them together so that we can iterate over them
-  * such that we don't iterate over commits that are included in merges.
-  *
-  * @typedef {object} GroupedCommit 
-  * @property {string} sha
-  * @property {boolean} isMerge
-  * @property {string[]} childCommits
-  *
-  * @typedef {object} GroupedOptions 
-  * @property {string} branch
-  * @property {string} cwd
-  * @property {string} sinceTag
-  *
-  * @param {GroupedOptions} options
-  *
-  * @returns {Promise<GroupedCommit[]>}
-  */
+ * For a given set of commits (and merge commits),
+ * this function will group them together so that we can iterate over them
+ * such that we don't iterate over commits that are included in merges.
+ *
+ * @typedef {object} GroupedCommit
+ * @property {string} sha
+ * @property {boolean} isMerge
+ * @property {string[]} childCommits
+ *
+ * @typedef {object} GroupedOptions
+ * @property {string} branch
+ * @property {string} cwd
+ * @property {string} sinceTag
+ *
+ * @param {GroupedOptions} options
+ *
+ * @returns {Promise<GroupedCommit[]>}
+ */
 async function getGroupedCommits(options) {
   let result = [];
 
@@ -175,20 +175,20 @@ async function getGroupedCommits(options) {
   for (let commit of mergeCommits) {
     let childCommits = await commitsForMerge(commit, cwd);
 
-    /** @type {GroupedCommit} */ 
+    /** @type {GroupedCommit} */
     let groupedCommit = {
       isMerge: true,
       sha: commit,
       childCommits,
-    }
+    };
 
     seenCommits.add(commit);
-    childCommits.forEach(commit => seenCommits.add(commit));
+    childCommits.forEach((commit) => seenCommits.add(commit));
 
     result.push(groupedCommit);
   }
 
-  let unseenCommits = commits.filter(commit => {
+  let unseenCommits = commits.filter((commit) => {
     return !seenCommits.has(commit);
   });
 
@@ -203,11 +203,10 @@ async function getGroupedCommits(options) {
   let areAllMerges = mergeCommits.length === result.length;
 
   console.debug(
-     `\tMerge Commits: ${mergeCommits.length}\n` 
-    + `\tAll Commits: ${commits.length}\n`
-    + `\t--> ${areAllMerges ? 'all commits come from merges' : ''}`
+    `\tMerge Commits: ${mergeCommits.length}\n` +
+      `\tAll Commits: ${commits.length}\n` +
+      `\t--> ${areAllMerges ? 'all commits come from merges' : ''}`
   );
 
   return result;
-
 }

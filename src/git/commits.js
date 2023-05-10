@@ -4,15 +4,17 @@ import { execaCommand } from 'execa';
  * @param {string} mergeSha
  * @param {string} [ cwd ]
  */
-export async function commitsForMerge(
-  mergeSha,
-  cwd = process.cwd()
-) {
-  let { stdout: commitsWithBoundary } = await execaCommand(`git log ${mergeSha}^..${mergeSha} --format='%H'`, { cwd });
+export async function commitsForMerge(mergeSha, cwd = process.cwd()) {
+  let { stdout: commitsWithBoundary } = await execaCommand(
+    `git log ${mergeSha}^..${mergeSha} --format='%H'`,
+    { cwd }
+  );
 
-  let commits = commitsWithBoundary.replaceAll(new RegExp(`'`, 'g'), '').split('\n');
+  let commits = commitsWithBoundary
+    .replaceAll(new RegExp(`'`, 'g'), '')
+    .split('\n');
 
-  return commits.filter(commit => mergeSha !== commit);
+  return commits.filter((commit) => mergeSha !== commit);
 }
 
 /**
@@ -20,8 +22,11 @@ export async function commitsForMerge(
  * @param {string} [ branch ]
  * @param {string} [ cwd ]
  */
-export async function commitsSince(sinceTag, branch = 'main', cwd = process.cwd()) {
-  
+export async function commitsSince(
+  sinceTag,
+  branch = 'main',
+  cwd = process.cwd()
+) {
   let { stdout } = await execaCommand(
     `git log ${sinceTag}..${branch} --format='%H'`,
     { cwd }
