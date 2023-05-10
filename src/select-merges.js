@@ -7,52 +7,64 @@ import { authorIs } from './git/author.js';
 
 inquirer.registerPrompt('tree', TreePrompt);
 
+const NO_CHANGESET = `Merges that don't have changeset entries`;
+const EXISTING_CHANGESET = `Merges that already have changeset entries`;
+const FROM_RENOVATE = 'From Renovate';
+const FROM_DEPENDABOT = 'From Dependabot';
+
 /**
  * @param {import('./types.js').GroupedChange[]} changes
  */
 export async function selectMerges(changes) {
   let filtered = filterBots(changes);
   let treeOptions = [];
+  /** @type {Record<string, { value: string; name: string; short: string; }[]>} */
+  let optionsByKey = {
+    [NO_CHANGESET]: await Promise.all(
+      filtered.nonBots.map(changeToInquiererChoice)
+    ),
+    [EXISTING_CHANGESET]: [],
+    [FROM_RENOVATE]: [],
+    [FROM_DEPENDABOT]: [],
+  };
 
   treeOptions.push({
-    value: `Merges that don't have changeset entries`,
+    value: NO_CHANGESET,
     open: true,
-    children: [
-      ...(await Promise.all(filtered.nonBots.map(changeToInquiererChoice))),
-    ],
+    children: optionsByKey[NO_CHANGESET],
   });
 
   if (filtered.alreadyHasChangeset.length) {
+    optionsByKey[EXISTING_CHANGESET] = await Promise.all(
+      filtered.alreadyHasChangeset.map(changeToInquiererChoice)
+    );
     treeOptions.push({
-      value: `Merges that already have changeset entries`,
+      value: EXISTING_CHANGESET,
       open: false,
-      children: [
-        ...(await Promise.all(
-          filtered.alreadyHasChangeset.map(changeToInquiererChoice)
-        )),
-      ],
+      children: optionsByKey[EXISTING_CHANGESET],
     });
   }
 
   if (filtered.renovate.length) {
+    optionsByKey[FROM_RENOVATE] = await Promise.all(
+      filtered.renovate.map(changeToInquiererChoice)
+    );
+
     treeOptions.push({
-      value: 'From Renovate',
+      value: FROM_RENOVATE,
       open: false,
-      children: [
-        ...(await Promise.all(filtered.renovate.map(changeToInquiererChoice))),
-      ],
+      children: optionsByKey[FROM_RENOVATE],
     });
   }
 
   if (filtered.dependabot.length) {
+    optionsByKey[FROM_DEPENDABOT] = await Promise.all(
+      filtered.dependabot.map(changeToInquiererChoice)
+    );
     treeOptions.push({
-      value: 'From Dependabot',
+      value: FROM_DEPENDABOT,
       open: false,
-      children: [
-        ...(await Promise.all(
-          filtered.dependabot.map(changeToInquiererChoice)
-        )),
-      ],
+      children: optionsByKey[FROM_DEPENDABOT],
     });
   }
 
@@ -65,15 +77,19 @@ export async function selectMerges(changes) {
       multiple: true,
       short: true,
       tree: treeOptions,
-      // transformer: (_, answers) => {
-      //   console.log({ answers, _ })
-      //   return;
-      //   return answers.map(answer => chalk.bold.yellow(answer.slice(0, 8)));
-      // }
     },
   ]);
 
   let selected = answers.commitsToMakeChangesetsFor;
+
+  /**
+   * Handle bulk / top-level tree selections
+   */
+  for (let [key, options] of Object.entries(optionsByKey)) {
+    if (selected.includes(key)) {
+      selected.push(...options.map((option) => option.value));
+    }
+  }
 
   return changes.filter((change) => selected.includes(change.commit));
 }
