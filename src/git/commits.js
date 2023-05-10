@@ -2,27 +2,37 @@ import { execaCommand } from 'execa';
 
 /**
  * @param {string} mergeSha
- * @param {string} [ baseBranch ]
  * @param {string} [ cwd ]
  */
-export async function commitsForMerge(
-  mergeSha,
-  baseBranch = 'main',
-  cwd = process.cwd()
-) {
-  // This currently includes the history before the branch started,
-  // so this is excessive
-  // await execaCommand(`git log -m ${mergeSha}`);
-
-  // last line + 1 is the number of commits to print
-  await execaCommand(
-    `git rev-list --no-merges --count ${baseBranch} ^${mergeSha}`,
+export async function commitsForMerge(mergeSha, cwd = process.cwd()) {
+  let { stdout: commitsWithBoundary } = await execaCommand(
+    `git log ${mergeSha}^..${mergeSha} --format='%H'`,
     { cwd }
   );
 
-  let numCommits = 0;
+  let commits = commitsWithBoundary
+    .replaceAll(new RegExp(`'`, 'g'), '')
+    .split('\n');
 
-  await execaCommand(`git log ${mergeSha} -${numCommits + 1}`, { cwd });
+  return commits.filter((commit) => mergeSha !== commit);
+}
+
+/**
+ * @param {string} sinceTag
+ * @param {string} [ branch ]
+ * @param {string} [ cwd ]
+ */
+export async function commitsSince(
+  sinceTag,
+  branch = 'main',
+  cwd = process.cwd()
+) {
+  let { stdout } = await execaCommand(
+    `git log ${sinceTag}..${branch} --format='%H'`,
+    { cwd }
+  );
+
+  return stdout.replace(new RegExp(`'`, 'g'), '').split('\n');
 }
 
 /**
